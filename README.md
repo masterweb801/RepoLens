@@ -15,12 +15,12 @@ RepoLens is a project that fetches and analyzes a GitHub user's programming skil
 ## Installation:
 1. Clone the repository:
     ```bash
-    git clone <your-repository-url>
+    git clone https://github.com/masterweb801/RepoLens.git
     ```
 
 2. Navigate to the project folder:
     ```bash
-    cd <your-project-folder>
+    cd RepoLens
     ```
 
 3. Install the required dependencies:
