@@ -1,60 +1,21 @@
 # RepoLens
 
-RepoLens is a project that fetches and analyzes a GitHub user's programming skills based on the repositories they have. It tracks the languages used across all repositories, counts how often each language is used, and calculates how many repositories the user has.
+RepoLens is a small Python command-line tool that analyzes a GitHub user's repositories and summarizes the programming languages used across them.
 
-## Features:
-- Fetches all programming languages used by a GitHub user.
-- Counts how many times each language is used.
-- Displays the total number of repositories of the user.
-- Outputs a breakdown of languages and their usage.
+Enter a GitHub username and RepoLens queries GitHub's GraphQL API, counts repositories, and reports how many repositories use each detected language.
 
-## Requirements:
-- Python 3.6 or higher
-- `requests` library for making HTTP requests.
+## Features
 
-## Installation:
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/masterweb801/RepoLens.git
-    ```
+- Looks up repositories belonging to a GitHub user.
+- Paginates through repository results rather than stopping at the first page.
+- Collects the languages reported for each repository.
+- Counts language appearances across repositories.
+- Prints the total repository count and a language-usage summary in the terminal.
 
-2. Navigate to the project folder:
-    ```bash
-    cd RepoLens
-    ```
+## Example output
 
-3. Install the required dependencies:
-    ```bash
-    pip install requests
-    ```
-
-4. Set up a personal GitHub access token:
-   - Go to [GitHub Personal Access Tokens](https://github.com/settings/tokens).
-   - Create a new token with `repo` and `user` permissions.
-   - Copy the generated token.
-
-5. Create a file named `api.py` and paste your GitHub token in it:
-    ```python
-    # api.py
-    GITHUB_ACCESS_TOKEN = "your_personal_access_token_here"
-    ```
-
-## Usage:
-
-1. Run the Python script:
-    ```bash
-    python fetch_github.py
-    ```
-
-2. The program will ask for the GitHub username:
-    ```bash
-    Enter GitHub username: <username>
-    ```
-
-3. The script will output the total number of repositories and the breakdown of languages used across those repositories.
-
-Example output:
-```bash
+```text
+Enter GitHub username: octocat
 Total Repositories: 12
 Language Usage:
   Python: 5 times
@@ -62,7 +23,68 @@ Language Usage:
   C++: 2 times
 ```
 
-## How It Works:
-- The script uses GitHub's GraphQL API to query all repositories of a user.
-- It collects the languages used in each repository and counts how many times each language appears.
-- The total number of repositories is also tracked.
+The values above are illustrative; actual results depend on the selected GitHub account.
+
+## Requirements
+
+- Python 3.6 or newer
+- `requests`
+- A GitHub personal access token configured locally
+
+## Installation
+
+Clone the repository and enter its directory:
+
+```bash
+git clone https://github.com/masterweb801/RepoLens.git
+cd RepoLens
+```
+
+Install the dependency:
+
+```bash
+python -m pip install requests
+```
+
+Create a local file named `api.py` in the project directory:
+
+```python
+GITHUB_ACCESS_TOKEN = "YOUR_GITHUB_TOKEN"
+```
+
+Then run:
+
+```bash
+python main.py
+```
+
+When prompted, enter the GitHub username to analyze.
+
+## Token safety
+
+The current source imports `GITHUB_ACCESS_TOKEN` from `api.py`. Keep that file local and private:
+
+- Never commit `api.py` or paste a real token into source code.
+- Use a token with only the permissions required for the repositories you intend to inspect.
+- For public repository statistics, avoid granting private-repository access unless you specifically need it.
+- Revoke a token immediately if it is exposed.
+
+## How it works
+
+RepoLens sends a GraphQL request to `https://api.github.com/graphql`. It requests repository pages for the supplied username, reads each repository's language nodes, and uses Python's `Counter` to aggregate the results.
+
+The current implementation counts a language once per repository when that language appears in the repository's returned language list. It is therefore a repository-usage count, not a measure of lines of code or language percentages.
+
+## Limitations
+
+- The current interface is terminal-based.
+- It reports language occurrence by repository, not byte or line proportions.
+- The result depends on the repositories and language metadata visible to the configured GitHub token.
+- The project currently expects a local `api.py` file; do not run it until that file is configured.
+
+## Project
+
+Developed by **Logic Realm**.
+
+- [Logic Realm](https://logicrealm.rf.gd/)
+- [Source code](https://github.com/masterweb801/RepoLens)
